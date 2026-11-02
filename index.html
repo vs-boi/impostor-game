@@ -245,8 +245,12 @@
                         <p id="teammates-list" class="text-sm font-semibold text-gray-200">None (Solo Impostor)</p>
                     </div>
 
-                    <div class="text-xs text-gray-400">
-                        Category Hint: <span id="impostor-hint-cat" class="text-gray-200 font-bold">Category</span>
+                    <!-- Enhanced Impostor Secret Sub-Hint -->
+                    <div class="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/30 text-left space-y-1">
+                        <div class="text-[11px] text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Impostor Secret Hint:
+                        </div>
+                        <p id="impostor-hint-cat" class="text-xs font-bold text-gray-200">Category &amp; Context</p>
                     </div>
                 </div>
 
@@ -547,6 +551,7 @@
             currentPassIndex: 0,
             currentWord: "",
             categoryName: "",
+            currentSubHint: "",
             timerRemainingSec: 0,
             timerInterval: null,
             timerIsPaused: false,
@@ -554,22 +559,32 @@
             votingVoterIdx: 0
         };
 
-        // Built-in Database Generator
+        // Built-in Database Generator with Sub-Category Hints for Impostors
         function buildCategories() {
             return [
-                { id: "cat_1", name: "Hollywood Blockbusters", words: ["Inception", "Titanic", "Avatar", "Interstellar", "The Dark Knight", "Pulp Fiction", "The Matrix", "Gladiator", "Avengers Endgame", "Jurassic Park", "Star Wars", "Harry Potter", "Spider-Man", "Fight Club", "Forrest Gump", "The Godfather", "Jaws", "Frozen", "Oppenheimer", "Barbie", "Shrek", "The Lion King", "Finding Nemo", "Back to the Future", "Alien", "Terminator", "Toy Story", "Up", "Coco", "Goodfellas", "Scarface", "Schindler's List", "Braveheart", "Die Hard", "The Prestige", "Whiplash", "La La Land", "Joker", "Black Panther", "Dune", "Casino Royale", "Mad Max Fury Road", "Monsters Inc", "Ratatouille", "WALL-E", "The Truman Show", "Inglourious Basterds", "Django Unchained", "The Social Network", "Parasite"] },
-                { id: "cat_2", name: "Bollywood Movies", words: ["Sholay", "Dilwale Dulhania Le Jayenge", "3 Idiots", "Lagaan", "Dangal", "PK", "Bahubali", "RRR", "Jawan", "Pathaan", "Gangs of Wasseypur", "Zindagi Na Milegi Dobara", "Queen", "Chak De India", "Taare Zameen Par", "Swades", "Andhadhun", "KGF", "Pushpa", "Stree", "Barfi", "Ye Jawaani Hai Deewani", "Gully Boy", "Drishyam", "Devdas", "Munna Bhai M.B.B.S.", "Hera Pheri", "Golmaal", "Jab We Met", "Kabir Singh", "Om Shanti Om", "Bajrangi Bhaijaan", "Sultan", "War", "Brahmastra", "Animal", "Kantara", "Tumbbad", "Uri The Surgical Strike", "Article 15", "Rockstar", "Haider", "Special 26", "Delhi Belly", "Welcome", "Dhamaal", "Bhool Bhulaiyaa", "Super 30", "Badhaai Ho", "Vicky Donor"] },
-                { id: "cat_3", name: "Popular Global Dishes", words: ["Pizza", "Burger", "Sushi", "Ramen", "Tacos", "Pasta Carbonara", "Paella", "Dim Sum", "Pad Thai", "Poutine", "Croissant", "Falafel", "Kebab", "Shawarma", "Burrito", "Churros", "Pho", "Fish and Chips", "Doner Kebab", "Pierogi", "Kimchi", "Bao Buns", "Cannoli", "Crepes", "Fondue", "Satay", "Ceviche", "Quesadilla", "Lasagna", "Calzone", "Gnocchi", "Macarons", "Tiramisu", "Chow Mein", "Spring Rolls", "Tamales", "Risotto", "Hummus", "Chicken Tikka", "Goulash", "Enchiladas", "Fajitas", "Miso Soup", "Waffles", "Hot Dog", "French Fries", "Clam Chowder", "Beef Wellington", "Pancakes", "BBQ Ribs"] },
-                { id: "cat_4", name: "Indian Street Foods", words: ["Samosa", "Pani Puri", "Pav Bhaji", "Vada Pav", "Chole Bhature", "Bhel Puri", "Aloo Tikki", "Kachori", "Dosa", "Idli", "Momos", "Kathi Roll", "Jalebi", "Rabri", "Gulab Jamun", "Dahi Puri", "Sev Puri", "Dhokla", "Khandvi", "Mirchi Bada", "Papdi Chaat", "Dahi Vada", "Egg Roll", "Chicken Roll", "Kulfi", "Lassi", "Falooda", "Bread Pakora", "Samosa Chaat", "Seekh Kebab", "Tandoori Chicken", "Fish Fry", "Paneer Tikka", "Malai Chaap", "Golgappa", "Raj Kachori", "Mirchi Pakoda", "Misal Pav", "Kanda Bhajji", "Bedmi Puri", "Ram Ladoo", "Sabudana Vada", "Ragda Pattice", "Bhutta", "Frankie", "Chowmein", "Aloo Chaat", "Poha", "Upma", "Meda Vada"] },
-                { id: "cat_5", name: "Tech & Social Apps", words: ["Google", "Apple", "Microsoft", "Amazon", "Meta", "Tesla", "NVIDIA", "Samsung", "Sony", "Intel", "AMD", "IBM", "Adobe", "Netflix", "Spotify", "Uber", "Airbnb", "PayPal", "Shopify", "Twitter X", "Snapchat", "TikTok", "YouTube", "Instagram", "WhatsApp", "Telegram", "LinkedIn", "Reddit", "Pinterest", "Discord", "Twitch", "Zoom", "Slack", "Notion", "ChatGPT", "Subway Surfers", "Candy Crush", "Duolingo", "Canva", "Tinder", "Swiggy", "Zomato", "Paytm", "PhonePe", "Truecaller", "Strava", "Dropbox", "Google Maps", "OpenAI", "GeeksforGeeks"] },
-                { id: "cat_6", name: "Video Games", words: ["Minecraft", "Grand Theft Auto V", "Fortnite", "Call of Duty", "League of Legends", "Valorant", "Counter-Strike", "PUBG Mobile", "FIFA EA FC", "The Witcher 3", "Elden Ring", "God of War", "Red Dead Redemption", "Apex Legends", "Overwatch", "Dota 2", "Clash of Clans", "Among Us", "Cyberpunk 2077", "Roblox", "Super Mario Bros", "The Legend of Zelda", "Pokemon", "Assassin's Creed", "Tekken", "Street Fighter", "Mortal Kombat", "Fall Guys", "Rocket League", "Dark Souls", "Resident Evil", "Halo", "Spider-Man", "Valorant", "Subway Surfers", "Brawl Stars", "Genshin Impact", "Free Fire", "World of Warcraft", "Starcraft", "Uncharted", "The Last of Us", "Hollow Knight", "Terraria", "Stardew Valley", "Doom", "Borderlands", "Monster Hunter", "Horizon Zero Dawn", "Final Fantasy"] },
-                { id: "cat_7", name: "Indian Cities", words: ["Mumbai", "Delhi", "Bengaluru", "Kolkata", "Chennai", "Hyderabad", "Ahmedabad", "Pune", "Jaipur", "Surat", "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Vadodara", "Firozabad", "Ludhiana", "Rajkot", "Agra", "Siliguri", "Nashik", "Faridabad", "Patna", "Meerut", "Kalyan", "Varanasi", "Srinagar", "Dhanbad", "Amritsar", "Navi Mumbai", "Allahabad Prayagraj", "Ranchi", "Howrah", "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada", "Jodhpur", "Madurai", "Raipur", "Kota", "Guwahati", "Chandigarh", "Solapur", "Bareilly", "Moradabad", "Mysore"] },
-                { id: "cat_8", name: "Animals & Wildlife", words: ["Lion", "Tiger", "African Elephant", "Cheetah", "Leopard", "Snow Leopard", "Jaguar", "Grizzly Bear", "Polar Bear", "Panda", "Giraffe", "Zebra", "Hippopotamus", "Rhinoceros", "Gorilla", "Chimpanzee", "Kangaroo", "Koala", "Wolf", "Red Fox", "Hyena", "Crocodile", "Alligator", "Komodo Dragon", "King Cobra", "Great White Shark", "Killer Whale Orca", "Dolphin", "Octopus", "Bald Eagle", "Peregrine Falcon", "Owl", "Flamingo", "Peacock", "Penguin", "Walrus", "Sea Otter", "Beaver", "Platypus", "Sloth", "Camel", "Llama", "Chameleon", "Python", "Tarantula", "Vulture", "Hyena", "Wild Boar", "Black Panther", "Moose"] },
-                { id: "cat_9", name: "Superheroes & Villains", words: ["Spider-Man", "Iron Man", "Batman", "Superman", "Thor", "Captain America", "Wolverine", "Hulk", "Wonder Woman", "Black Panther", "Doctor Strange", "Deadpool", "Thanos", "The Joker", "Loki", "Venom", "Green Goblin", "Magneto", "Darth Vader", "Aquaman", "Flash", "Green Lantern", "Daredevil", "Punisher", "Hawkeye", "Black Widow", "Scarlet Witch", "Vision", "Ant-Man", "Doctor Doom", "Lex Luthor", "Penguin", "Riddler", "Two-Face", "Catwoman", "Harley Quinn", "Bane", "Doctor Octopus", "Mystique", "Professor X", "Cyclops", "Storm", "Groot", "Rocket Raccoon", "Star-Lord", "Shazam", "Supergirl", "Robin", "Nightwing", "Ultron"] },
-                { id: "cat_10", name: "Anime & Cartoons", words: ["Naruto", "Dragon Ball Z", "One Piece", "Attack on Titan", "Demon Slayer", "Death Note", "My Hero Academia", "Jujutsu Kaisen", "Pokemon", "Bleach", "Fullmetal Alchemist", "Hunter x Hunter", "Tokyo Ghoul", "Chainsaw Man", "Tom and Jerry", "Looney Tunes", "SpongeBob SquarePants", "Phineas and Ferb", "Ben 10", "Powerpuff Girls", "Scooby-Doo", "Doraemon", "Shin-chan", "Oswald", "Noddy", "Courage the Cowardly Dog", "Dexter's Laboratory", "Samurai Jack", "The Simpsons", "Family Guy", "Rick and Morty", "Adventure Time", "Gravity Falls", "Avatar The Last Airbender", "Teen Titans", "Danny Phantom", "Chowder", "Johnny Bravo", "Transformers", "Teenage Mutant Ninja Turtles", "Garfield", "Mickey Mouse", "Donald Duck", "Popeye", "Peppa Pig", "Mr. Bean", "Oggy and the Cockroaches", "Miraculous Ladybug", "Beyblade", "Digimon"] },
-                { id: "cat_11", name: "World Landmarks", words: ["Taj Mahal", "Eiffel Tower", "Great Wall of China", "Colosseum", "Statue of Liberty", "Machu Picchu", "Petra", "Pyramids of Giza", "Burj Khalifa", "Big Ben", "Christ the Redeemer", "Sydney Opera House", "Mount Everest", "Niagara Falls", "Grand Canyon", "Golden Gate Bridge", "Leaning Tower of Pisa", "Acropolis of Athens", "Louvre Museum", "Stonehenge", "Mount Fuji", "Angkor Wat", "Sagrada Familia", "Times Square", "Buckingham Palace", "St Peter's Basilica", "Forbidden City", "Chichen Itza", "Victoria Falls", "Grand Palace Bangkok", "Hagia Sophia", "Brandenburg Gate", "Neuschwanstein Castle", "Tower of London", "Central Park", "Hollywood Sign", "Kizhi Pogost", "Mount Rushmore", "St Basil's Cathedral", "Disneyland", "Red Square", "Panama Canal", "Alhambra", "Verdon Gorge", "Sears Tower", "Marina Bay Sands", "Lotus Temple", "Gateway of India", "Qutub Minar", "Hawa Mahal"] },
-                { id: "cat_12", name: "Household Objects", words: ["Refrigerator", "Microwave", "Washing Machine", "Television", "Air Conditioner", "Ceiling Fan", "Vacuum Cleaner", "Toaster", "Blender", "Coffee Maker", "Electric Kettle", "Hair Dryer", "Ironing Board", "Sofa", "Dining Table", "Wardrobe", "Bookshelf", "Bed Mattress", "Pillow", "Wall Clock", "Desk Lamp", "Mirror", "Curtains", "Trash Can", "Laundry Basket", "Toothbrush", "Bath Towel", "Shampoo Bottle", "Soap Dispenser", "Frying Pan", "Pressure Cooker", "Cutting Board", "Chef Knife", "Water Bottle", "Coffee Mug", "Plate", "Fork and Spoon", "Window Blinds", "Extension Cord", "Power Bank", "Door Mat", "Ceiling Light", "Key Rack", "Shoe Rack", "Bucket", "Mop", "Broom", "Dustpan", "Hanger", "Alarm Clock"] }
+                { id: "cat_1", name: "Hollywood Blockbusters", hint: "Cinema / Movies", words: ["Inception", "Titanic", "Avatar", "Interstellar", "The Dark Knight", "Pulp Fiction", "The Matrix", "Gladiator", "Avengers Endgame", "Jurassic Park", "Star Wars", "Harry Potter", "Spider-Man", "Fight Club", "Forrest Gump", "The Godfather", "Jaws", "Frozen", "Oppenheimer", "Barbie", "Shrek", "The Lion King", "Finding Nemo", "Back to the Future", "Alien", "Terminator", "Toy Story", "Up", "Coco", "Goodfellas", "Scarface", "Schindler's List", "Braveheart", "Die Hard", "The Prestige", "Whiplash", "La La Land", "Joker", "Black Panther", "Dune", "Casino Royale", "Mad Max Fury Road", "Monsters Inc", "Ratatouille", "WALL-E", "The Truman Show", "Inglourious Basterds", "Django Unchained", "The Social Network", "Parasite"] },
+                { id: "cat_2", name: "Bollywood Movies", hint: "Indian Cinema / Dramas & Action", words: ["Sholay", "Dilwale Dulhania Le Jayenge", "3 Idiots", "Lagaan", "Dangal", "PK", "Bahubali", "RRR", "Jawan", "Pathaan", "Gangs of Wasseypur", "Zindagi Na Milegi Dobara", "Queen", "Chak De India", "Taare Zameen Par", "Swades", "Andhadhun", "KGF", "Pushpa", "Stree", "Barfi", "Ye Jawaani Hai Deewani", "Gully Boy", "Drishyam", "Devdas", "Munna Bhai M.B.B.S.", "Hera Pheri", "Golmaal", "Jab We Met", "Kabir Singh", "Om Shanti Om", "Bajrangi Bhaijaan", "Sultan", "War", "Brahmastra", "Animal", "Kantara", "Tumbbad", "Uri The Surgical Strike", "Article 15", "Rockstar", "Haider", "Special 26", "Delhi Belly", "Welcome", "Dhamaal", "Bhool Bhulaiyaa", "Super 30", "Badhaai Ho", "Vicky Donor"] },
+                { id: "cat_3", name: "Popular Global Dishes", hint: "International Food & Cuisine", words: ["Pizza", "Burger", "Sushi", "Ramen", "Tacos", "Pasta Carbonara", "Paella", "Dim Sum", "Pad Thai", "Poutine", "Croissant", "Falafel", "Kebab", "Shawarma", "Burrito", "Churros", "Pho", "Fish and Chips", "Doner Kebab", "Pierogi", "Kimchi", "Bao Buns", "Cannoli", "Crepes", "Fondue", "Satay", "Ceviche", "Quesadilla", "Lasagna", "Calzone", "Gnocchi", "Macarons", "Tiramisu", "Chow Mein", "Spring Rolls", "Tamales", "Risotto", "Hummus", "Chicken Tikka", "Goulash", "Enchiladas", "Fajitas", "Miso Soup", "Waffles", "Hot Dog", "French Fries", "Clam Chowder", "Beef Wellington", "Pancakes", "BBQ Ribs"] },
+                { id: "cat_4", name: "Indian Street Foods", hint: "Spicy Snacks & Local Street Eats", words: ["Samosa", "Pani Puri", "Pav Bhaji", "Vada Pav", "Chole Bhature", "Bhel Puri", "Aloo Tikki", "Kachori", "Dosa", "Idli", "Momos", "Kathi Roll", "Jalebi", "Rabri", "Gulab Jamun", "Dahi Puri", "Sev Puri", "Dhokla", "Khandvi", "Mirchi Bada", "Papdi Chaat", "Dahi Vada", "Egg Roll", "Chicken Roll", "Kulfi", "Lassi", "Falooda", "Bread Pakora", "Samosa Chaat", "Seekh Kebab", "Tandoori Chicken", "Fish Fry", "Paneer Tikka", "Malai Chaap", "Golgappa", "Raj Kachori", "Mirchi Pakoda", "Misal Pav", "Kanda Bhajji", "Bedmi Puri", "Ram Ladoo", "Sabudana Vada", "Ragda Pattice", "Bhutta", "Frankie", "Chowmein", "Aloo Chaat", "Poha", "Upma", "Meda Vada"] },
+                { id: "cat_5", name: "Tech & Social Apps", hint: "Digital Platforms & Tech Brands", words: ["Google", "Apple", "Microsoft", "Amazon", "Meta", "Tesla", "NVIDIA", "Samsung", "Sony", "Intel", "AMD", "IBM", "Adobe", "Netflix", "Spotify", "Uber", "Airbnb", "PayPal", "Shopify", "Twitter X", "Snapchat", "TikTok", "YouTube", "Instagram", "WhatsApp", "Telegram", "LinkedIn", "Reddit", "Pinterest", "Discord", "Twitch", "Zoom", "Slack", "Notion", "ChatGPT", "Subway Surfers", "Candy Crush", "Duolingo", "Canva", "Tinder", "Swiggy", "Zomato", "Paytm", "PhonePe", "Truecaller", "Strava", "Dropbox", "Google Maps", "OpenAI", "GeeksforGeeks"] },
+                { id: "cat_6", name: "Video Games", hint: "Gaming Titles & Interactive Media", words: ["Minecraft", "Grand Theft Auto V", "Fortnite", "Call of Duty", "League of Legends", "Valorant", "Counter-Strike", "PUBG Mobile", "FIFA EA FC", "The Witcher 3", "Elden Ring", "God of War", "Red Dead Redemption", "Apex Legends", "Overwatch", "Dota 2", "Clash of Clans", "Among Us", "Cyberpunk 2077", "Roblox", "Super Mario Bros", "The Legend of Zelda", "Pokemon", "Assassin's Creed", "Tekken", "Street Fighter", "Mortal Kombat", "Fall Guys", "Rocket League", "Dark Souls", "Resident Evil", "Halo", "Spider-Man", "Valorant", "Subway Surfers", "Brawl Stars", "Genshin Impact", "Free Fire", "World of Warcraft", "Starcraft", "Uncharted", "The Last of Us", "Hollow Knight", "Terraria", "Stardew Valley", "Doom", "Borderlands", "Monster Hunter", "Horizon Zero Dawn", "Final Fantasy"] },
+                { id: "cat_7", name: "Indian Cities", hint: "Geographic Destinations & Urban Hubs", words: ["Mumbai", "Delhi", "Bengaluru", "Kolkata", "Chennai", "Hyderabad", "Ahmedabad", "Pune", "Jaipur", "Surat", "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Vadodara", "Firozabad", "Ludhiana", "Rajkot", "Agra", "Siliguri", "Nashik", "Faridabad", "Patna", "Meerut", "Kalyan", "Varanasi", "Srinagar", "Dhanbad", "Amritsar", "Navi Mumbai", "Allahabad Prayagraj", "Ranchi", "Howrah", "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada", "Jodhpur", "Madurai", "Raipur", "Kota", "Guwahati", "Chandigarh", "Solapur", "Bareilly", "Moradabad", "Mysore"] },
+                { id: "cat_8", name: "Animals & Wildlife", hint: "Living Creatures & Wildlife", words: ["Lion", "Tiger", "African Elephant", "Cheetah", "Leopard", "Snow Leopard", "Jaguar", "Grizzly Bear", "Polar Bear", "Panda", "Giraffe", "Zebra", "Hippopotamus", "Rhinoceros", "Gorilla", "Chimpanzee", "Kangaroo", "Koala", "Wolf", "Red Fox", "Hyena", "Crocodile", "Alligator", "Komodo Dragon", "King Cobra", "Great White Shark", "Killer Whale Orca", "Dolphin", "Octopus", "Bald Eagle", "Peregrine Falcon", "Owl", "Flamingo", "Peacock", "Penguin", "Walrus", "Sea Otter", "Beaver", "Platypus", "Sloth", "Camel", "Llama", "Chameleon", "Python", "Tarantula", "Vulture", "Hyena", "Wild Boar", "Black Panther", "Moose"] },
+                { id: "cat_9", name: "Superheroes & Villains", hint: "Comic Book & Heroic Characters", words: ["Spider-Man", "Iron Man", "Batman", "Superman", "Thor", "Captain America", "Wolverine", "Hulk", "Wonder Woman", "Black Panther", "Doctor Strange", "Deadpool", "Thanos", "The Joker", "Loki", "Venom", "Green Goblin", "Magneto", "Darth Vader", "Aquaman", "Flash", "Green Lantern", "Daredevil", "Punisher", "Hawkeye", "Black Widow", "Scarlet Witch", "Vision", "Ant-Man", "Doctor Doom", "Lex Luthor", "Penguin", "Riddler", "Two-Face", "Catwoman", "Harley Quinn", "Bane", "Doctor Octopus", "Mystique", "Professor X", "Cyclops", "Storm", "Groot", "Rocket Raccoon", "Star-Lord", "Shazam", "Supergirl", "Robin", "Nightwing", "Ultron"] },
+                { id: "cat_10", name: "Anime & Cartoons", hint: "Animated Series & Shows", words: ["Naruto", "Dragon Ball Z", "One Piece", "Attack on Titan", "Demon Slayer", "Death Note", "My Hero Academia", "Jujutsu Kaisen", "Pokemon", "Bleach", "Fullmetal Alchemist", "Hunter x Hunter", "Tokyo Ghoul", "Chainsaw Man", "Tom and Jerry", "Looney Tunes", "SpongeBob SquarePants", "Phineas and Ferb", "Ben 10", "Powerpuff Girls", "Scooby-Doo", "Doraemon", "Shin-chan", "Oswald", "Noddy", "Courage the Cowardly Dog", "Dexter's Laboratory", "Samurai Jack", "The Simpsons", "Family Guy", "Rick and Morty", "Adventure Time", "Gravity Falls", "Avatar The Last Airbender", "Teen Titans", "Danny Phantom", "Chowder", "Johnny Bravo", "Transformers", "Teenage Mutant Ninja Turtles", "Garfield", "Mickey Mouse", "Donald Duck", "Popeye", "Peppa Pig", "Mr. Bean", "Oggy and the Cockroaches", "Miraculous Ladybug", "Beyblade", "Digimon"] },
+                { id: "cat_11", name: "World Landmarks", hint: "Monuments & Famous Locations", words: ["Taj Mahal", "Eiffel Tower", "Great Wall of China", "Colosseum", "Statue of Liberty", "Machu Picchu", "Petra", "Pyramids of Giza", "Burj Khalifa", "Big Ben", "Christ the Redeemer", "Sydney Opera House", "Mount Everest", "Niagara Falls", "Grand Canyon", "Golden Gate Bridge", "Leaning Tower of Pisa", "Acropolis of Athens", "Louvre Museum", "Stonehenge", "Mount Fuji", "Angkor Wat", "Sagrada Familia", "Times Square", "Buckingham Palace", "St Peter's Basilica", "Forbidden City", "Chichen Itza", "Victoria Falls", "Grand Palace Bangkok", "Hagia Sophia", "Brandenburg Gate", "Neuschwanstein Castle", "Tower of London", "Central Park", "Hollywood Sign", "Kizhi Pogost", "Mount Rushmore", "St Basil's Cathedral", "Disneyland", "Red Square", "Panama Canal", "Alhambra", "Verdon Gorge", "Sears Tower", "Marina Bay Sands", "Lotus Temple", "Gateway of India", "Qutub Minar", "Hawa Mahal"] },
+                { id: "cat_12", name: "Household Objects", hint: "Indoor Appliances & Daily Items", words: ["Refrigerator", "Microwave", "Washing Machine", "Television", "Air Conditioner", "Ceiling Fan", "Vacuum Cleaner", "Toaster", "Blender", "Coffee Maker", "Electric Kettle", "Hair Dryer", "Ironing Board", "Sofa", "Dining Table", "Wardrobe", "Bookshelf", "Bed Mattress", "Pillow", "Wall Clock", "Desk Lamp", "Mirror", "Curtains", "Trash Can", "Laundry Basket", "Toothbrush", "Bath Towel", "Shampoo Bottle", "Soap Dispenser", "Frying Pan", "Pressure Cooker", "Cutting Board", "Chef Knife", "Water Bottle", "Coffee Mug", "Plate", "Fork and Spoon", "Window Blinds", "Extension Cord", "Power Bank", "Door Mat", "Ceiling Light", "Key Rack", "Shoe Rack", "Bucket", "Mop", "Broom", "Dustpan", "Hanger", "Alarm Clock"] }
             ];
+        }
+
+        // Fisher-Yates True Random Shuffle Algorithm
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
 
         let allCategories = buildCategories();
@@ -837,15 +852,11 @@
             }
 
             // Pick a word avoiding recent history
-            let chosenCat = null;
-            let chosenWord = null;
-
-            // Gather all available words
             let pool = [];
             activeCategories.forEach(cat => {
                 cat.words.forEach(w => {
                     if (!gameState.usedWords.has(w)) {
-                        pool.push({ catName: cat.name, word: w });
+                        pool.push({ catName: cat.name, hint: cat.hint || cat.name, word: w });
                     }
                 });
             });
@@ -854,21 +865,19 @@
             if (pool.length === 0) {
                 gameState.usedWords.clear();
                 activeCategories.forEach(cat => {
-                    cat.words.forEach(w => pool.push({ catName: cat.name, word: w }));
+                    cat.words.forEach(w => pool.push({ catName: cat.name, hint: cat.hint || cat.name, word: w }));
                 });
             }
 
             const randomPick = pool[Math.floor(Math.random() * pool.length)];
-            chosenWord = randomPick.word;
-            chosenCat = randomPick.catName;
-            gameState.usedWords.add(chosenWord);
+            gameState.currentWord = randomPick.word;
+            gameState.categoryName = randomPick.catName;
+            gameState.currentSubHint = randomPick.hint;
+            gameState.usedWords.add(randomPick.word);
 
-            gameState.currentWord = chosenWord;
-            gameState.categoryName = chosenCat;
-
-            // Assign Impostors
-            const shuffledPlayers = [...gameState.playerNames].sort(() => Math.random() - 0.5);
-            const impostorNames = new Set(shuffledPlayers.slice(0, gameState.impostorCount));
+            // True random shuffling for Impostor selection
+            const shuffledPlayerList = shuffleArray(gameState.playerNames);
+            const impostorNames = new Set(shuffledPlayerList.slice(0, gameState.impostorCount));
 
             gameState.players = gameState.playerNames.map(name => ({
                 name: name,
@@ -881,20 +890,6 @@
             showScreen('screen-pass');
         }
 
-        // Pass-The-Phone Role Screen
-        function setupPassScreen() {
-            const player = gameState.players[gameState.currentPassIndex];
-            document.getElementById('pass-player-title').innerText = player.name;
-
-            // Reset Card Visibility
-            document.getElementById('card-hidden').classList.remove('hidden');
-            document.getElementById('card-civilian').classList.add('hidden');
-            document.getElementById('card-impostor').classList.add('hidden');
-
-            document.getElementById('btn-reveal').classList.remove('hidden');
-            document.getElementById('btn-next-player').classList.add('hidden');
-        }
-
         function revealRole(e) {
             if (e) e.preventDefault();
             const player = gameState.players[gameState.currentPassIndex];
@@ -903,7 +898,7 @@
 
             if (player.isImpostor) {
                 document.getElementById('card-impostor').classList.remove('hidden');
-                document.getElementById('impostor-hint-cat').innerText = gameState.categoryName;
+                document.getElementById('impostor-hint-cat').innerText = `${gameState.categoryName} (${gameState.currentSubHint})`;
 
                 const teammates = gameState.players
                     .filter(p => p.isImpostor && p.name !== player.name)
