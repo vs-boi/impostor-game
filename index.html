@@ -890,6 +890,20 @@
             showScreen('screen-pass');
         }
 
+        function setupPassScreen() {
+            const player = gameState.players[gameState.currentPassIndex];
+            document.getElementById('pass-player-title').innerText = `Pass to ${player.name}`;
+
+            // Reset card visibility states
+            document.getElementById('card-hidden').classList.remove('hidden');
+            document.getElementById('card-civilian').classList.add('hidden');
+            document.getElementById('card-impostor').classList.add('hidden');
+
+            // Reset reveal buttons
+            document.getElementById('btn-reveal').classList.remove('hidden');
+            document.getElementById('btn-next-player').classList.add('hidden');
+        }
+
         function revealRole(e) {
             if (e) e.preventDefault();
             const player = gameState.players[gameState.currentPassIndex];
