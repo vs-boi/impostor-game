@@ -259,9 +259,9 @@
                     <div class="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/30 text-left space-y-2">
                         <div>
                             <div class="text-[11px] text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Category Hint:
+                                <i data-lucide="git-branch" class="w-3.5 h-3.5"></i> Related Hint (1–2 Words):
                             </div>
-                            <p id="impostor-hint-cat" class="text-xs font-bold text-gray-200 mt-0.5">Category &amp; Context</p>
+                            <p id="impostor-hint-cat" class="text-xs font-bold text-gray-200 mt-0.5">A short association will appear here.</p>
                         </div>
                         <div class="border-t border-indigo-500/20 pt-2">
                             <div class="text-[11px] text-purple-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -575,7 +575,7 @@
     <script>
         // Data Structures & Game State
         const gameState = {
-            playerNames: ["Alex", "Jordan", "Sam", "Taylor"],
+            playerNames: ["Arush", "rayyan", "manshat", "shivnandan", "Adarsh", "Sultanat", "Inshira", "Aradhya"],
             selectedCatIds: [],
             impostorCount: 1,
             timerMinutes: 2,
@@ -844,6 +844,58 @@
             document.getElementById('modal-custom-cat').classList.add('hidden');
         }
 
+        // Short 1–2 word associations give the impostor a nudge without revealing the answer.
+        function getRelatedWordHint(word) {
+            const key = String(word).trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+            const hints = {
+                'green goblin': 'Spider-Man', 'spider man': 'Peter Parker',
+                'iron man': 'Tony Stark', 'batman': 'Gotham City',
+                'superman': 'Kryptonite', 'joker': 'Harley Quinn',
+                'venom': 'Symbiote', 'thanos': 'Infinity Stones',
+                'loki': 'Asgard', 'doctor octopus': 'Mechanical Arms',
+                'magneto': 'Magnetism', 'darth vader': 'Dark Side',
+                'captain america': 'Vibranium Shield', 'black panther': 'Wakanda',
+                'thor': 'Mjolnir', 'hulk': 'Gamma Radiation',
+                'wonder woman': 'Themyscira', 'aquaman': 'Atlantis',
+                'harry potter': 'Hogwarts', 'star wars': 'Lightsabers',
+                'titanic': 'Iceberg', 'jurassic park': 'Dinosaurs',
+                'finding nemo': 'Clownfish', 'the lion king': 'Pride Rock',
+                'inception': 'Dreams', 'avatar': 'Pandora', 'barbie': 'Pink World',
+                'shrek': 'Talking Donkey', 'minecraft': 'Creepers',
+                'fortnite': 'Battle Bus', 'among us': 'Crewmates',
+                'pokemon': 'Pikachu', 'super mario bros': 'Mushroom Kingdom',
+                'google': 'Search Engine', 'youtube': 'Video Creators',
+                'instagram': 'Photo Reels', 'whatsapp': 'Green Chats',
+                'netflix': 'Red N', 'spotify': 'Playlists',
+                'samosa': 'Chutney', 'pani puri': 'Spiced Water',
+                'pizza': 'Mozzarella', 'burger': 'French Fries',
+                'taj mahal': 'Shah Jahan', 'eiffel tower': 'Paris',
+                'great wall of china': 'Ancient China',
+                'statue of liberty': 'Torch', 'burj khalifa': 'Dubai',
+                'mount everest': 'Himalayas', 'kolkata': 'Howrah Bridge',
+                'mumbai': 'Bollywood', 'delhi': 'India Gate',
+                'lion': 'Mane', 'elephant': 'Trunk',
+                'tiger': 'Stripes', 'penguin': 'Antarctica',
+                'dolphin': 'Echolocation', 'cricket': 'Wickets',
+                'football': 'Goalkeeper', 'chess': 'Checkmate'
+            };
+            if (hints[key]) return hints[key];
+
+            // Compact fallback associations for words not in the curated list.
+            const compactClues = [
+                [/^the |^a /, 'Famous Reference'],
+                [/bear|lion|tiger|elephant|zebra|panda|giraffe|wolf|fox|shark|whale|octopus|eagle|owl|snake|cobra|crocodile|alligator|kangaroo|koala|penguin|dolphin|cheetah|leopard|jaguar|gorilla|chimpanzee|hippopotamus|rhino|camel|sloth|moose|flamingo|peacock/i, 'Animal Clue'],
+                [/tower|bridge|palace|museum|temple|fort|wall|monument|falls|mount|mountain|park|opera|statue|gate|pyramid|colosseum|everest|taj mahal|qutub|hawa mahal/i, 'Famous Landmark'],
+                [/movie|film|cinema|inception|titanic|avatar|shrek|barbie|joker|dune|frozen|gladiator/i, 'Movie Reference'],
+                [/pizza|burger|sushi|ramen|taco|pasta|samosa|puri|bhaji|vada|dosa|idli|momo|kebab|biryani|chow|noodle|waffle|pancake|rice|soup|bread|cake|sweet|jalebi|kulfi|lassi/i, 'Food Pairing'],
+                [/google|apple|microsoft|amazon|meta|tesla|nvidia|samsung|sony|intel|adobe|netflix|spotify|uber|airbnb|paypal|twitter|snapchat|tiktok|youtube|instagram|whatsapp|telegram|linkedin|reddit|discord|zoom|slack|canva|chatgpt/i, 'Tech Link'],
+                [/minecraft|fortnite|pubg|valorant|pokemon|mario|zelda|roblox|among us|clash|witcher|elden ring|fifa|tekken|dota|overwatch/i, 'Game Reference'],
+                [/man|woman|thor|hulk|batman|superman|spider|captain|wonder|black panther|wolverine|deadpool|thanos|loki|venom|magneto|vader|joker/i, 'Hero Connection']
+            ];
+            const match = compactClues.find(([pattern]) => pattern.test(key));
+            return match ? match[1] : 'Related Clue';
+        }
+
         // Helper to generate dynamic structural word clues for Impostors
         function generateWordClues(word) {
             const cleanWord = word.trim().toLowerCase();
@@ -1043,7 +1095,7 @@
 
             if (player.isImpostor) {
                 document.getElementById('card-impostor').classList.remove('hidden');
-                document.getElementById('impostor-hint-cat').innerText = `${gameState.categoryName} (${gameState.currentSubHint})`;
+                document.getElementById('impostor-hint-cat').innerText = getRelatedWordHint(gameState.currentWord);
 
                 const wordClues = generateWordClues(gameState.currentWord);
                 const cluesListEl = document.getElementById('impostor-word-clues');
